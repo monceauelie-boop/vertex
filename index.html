@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERTEX — Expedition OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#05080F;
+  --surface:#0A0F18;
+  --surface-2:#101824;
+  --ice:#EAF3FB;
+  --frost:#8FA6BC;
+  --frost-dim:#5C6E82;
+  --glacier:#56D6E8;
+  --glacier-deep:#2C8EA6;
+  --alpenglow:#FF8A3D;
+  --alpenglow-soft:#FFB36B;
+  --line:rgba(86,214,232,.14);
+  --line-soft:rgba(143,166,188,.10);
+  --maxw:1180px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);
+  color:var(--ice);
+  font-family:"Manrope",sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 80% at 78% 8%, rgba(86,214,232,.10), transparent 55%),
+    radial-gradient(90% 60% at 12% 102%, rgba(255,138,61,.12), transparent 60%),
+    linear-gradient(180deg, #05080F 0%, #070C15 50%, #04070D 100%);
+}
+.mono{font-family:"JetBrains Mono",monospace}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;position:relative;z-index:2}
+a{color:inherit;text-decoration:none}
+
+/* eyebrow / labels */
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--glacier);display:inline-flex;align-items:center;gap:10px;
+}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--glacier);opacity:.7}
+
+/* ---------- status bar ---------- */
+.statusbar{
+  position:relative;z-index:3;border-bottom:1px solid var(--line);
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--frost-dim);
+  letter-spacing:.12em;background:rgba(5,8,15,.6);backdrop-filter:blur(6px);
+}
+.statusbar .wrap{display:flex;justify-content:space-between;align-items:center;height:34px;overflow:hidden;white-space:nowrap}
+.statusbar b{color:var(--glacier);font-weight:500}
+.statusbar .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--alpenglow);box-shadow:0 0 8px var(--alpenglow);margin-right:7px;vertical-align:middle;animation:blink 2.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.statusbar .sb-right{color:var(--frost-dim)}
+
+/* ---------- nav ---------- */
+header.nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);
+  background:rgba(5,8,15,.55);border-bottom:1px solid var(--line-soft)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:70px}
+.brand{display:flex;align-items:center;gap:12px;font-family:"Space Grotesk",sans-serif;
+  font-weight:700;font-size:19px;letter-spacing:.18em}
+.brand .glyph{width:26px;height:26px;flex:none}
+.navlinks{display:flex;gap:34px;font-size:14px;color:var(--frost)}
+.navlinks a{transition:color .2s;position:relative}
+.navlinks a:hover{color:var(--ice)}
+.navlinks a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--glacier);transition:width .25s}
+.navlinks a:hover::after{width:100%}
+.nav-cta{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.06em;
+  padding:11px 20px;border:1px solid var(--glacier);color:var(--glacier);border-radius:2px;
+  transition:.22s;text-transform:uppercase}
+.nav-cta:hover{background:var(--glacier);color:var(--void);box-shadow:0 0 24px rgba(86,214,232,.35)}
+.burger{display:none}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:78px 0 0;overflow:hidden}
+.hero .wrap{position:relative;z-index:5}
+.contours{position:absolute;inset:0;z-index:1;width:100%;height:100%;opacity:.55;pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
+.hero h1{
+  font-family:"Space Grotesk",sans-serif;font-weight:600;
+  font-size:clamp(2.7rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.02em;
+  margin:22px 0 22px;
+}
+.hero h1 .glow{color:var(--glacier);text-shadow:0 0 38px rgba(86,214,232,.45)}
+.hero p.lede{font-size:clamp(1.02rem,1.4vw,1.18rem);color:var(--frost);max-width:42ch;margin-bottom:34px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn-primary{
+  font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.04em;text-transform:uppercase;
+  background:var(--glacier);color:#04121A;font-weight:700;padding:15px 28px;border-radius:2px;border:1px solid var(--glacier);
+  transition:.22s;cursor:pointer;box-shadow:0 0 0 rgba(86,214,232,0)}
+.btn-primary:hover{box-shadow:0 0 30px rgba(86,214,232,.45);transform:translateY(-1px)}
+.btn-ghost{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--ice);padding:15px 24px;border:1px solid var(--line);border-radius:2px;transition:.22s}
+.btn-ghost:hover{border-color:var(--frost);background:rgba(143,166,188,.06)}
+
+/* hero instrument panel */
+.panel{
+  position:relative;border:1px solid var(--line);border-radius:6px;
+  background:linear-gradient(180deg, rgba(16,24,36,.82), rgba(8,12,20,.82));
+  padding:22px 22px 18px;backdrop-filter:blur(4px);
+  box-shadow:0 30px 80px -30px rgba(0,0,0,.8), inset 0 0 0 1px rgba(86,214,232,.04);
+}
+.panel-head{display:flex;justify-content:space-between;align-items:center;
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--frost-dim);text-transform:uppercase;margin-bottom:6px}
+.panel-head .live{color:var(--alpenglow)}
+.profile{width:100%;height:auto;display:block}
+.profile .grid line{stroke:var(--line-soft)}
+.profile .ascent{fill:none;stroke:var(--glacier);stroke-width:2.4;
+  stroke-linejoin:round;stroke-linecap:round;
+  filter:drop-shadow(0 0 6px rgba(86,214,232,.6));
+  stroke-dasharray:2600;stroke-dashoffset:2600;animation:draw 2.6s cubic-bezier(.5,0,.1,1) .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.profile .area{fill:url(#areaGrad);opacity:0;animation:fadein 1.4s ease 2.2s forwards}
+@keyframes fadein{to{opacity:1}}
+.summit-mark{opacity:0;animation:pop .5s ease 2.5s forwards}
+@keyframes pop{to{opacity:1}}
+.summit-pulse{transform-origin:center;animation:pulse 2.4s ease-out 2.7s infinite}
+@keyframes pulse{0%{r:5;opacity:.9}100%{r:22;opacity:0}}
+
+.readouts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:16px;
+  background:var(--line);border:1px solid var(--line)}
+.ro{background:var(--surface);padding:13px 12px}
+.ro .lbl{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.16em;color:var(--frost-dim);text-transform:uppercase}
+.ro .val{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.32rem;margin-top:4px;line-height:1}
+.ro .val small{font-size:.7rem;color:var(--frost);font-weight:400;margin-left:2px}
+.ro.amber .val{color:var(--alpenglow)}
+
+/* ---------- ridge silhouette ---------- */
+.ridge{position:relative;z-index:2;margin-top:46px;line-height:0}
+.ridge svg{width:100%;height:auto;display:block}
+
+/* ---------- section frame ---------- */
+section{position:relative;z-index:2;padding:96px 0}
+.sec-head{margin-bottom:54px;max-width:620px}
+.sec-head h2{font-family:"Space Grotesk",sans-serif;font-weight:600;
+  font-size:clamp(1.9rem,3.4vw,2.7rem);letter-spacing:-.015em;line-height:1.08;margin-top:16px}
+.sec-head p{color:var(--frost);margin-top:14px;font-size:1.04rem}
+.divider{height:1px;background:var(--line);position:relative}
+.divider::before{content:"";position:absolute;left:0;top:0;height:1px;width:120px;background:var(--glacier);box-shadow:0 0 12px var(--glacier)}
+
+/* ---------- modules grid ---------- */
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.mod{position:relative;border:1px solid var(--line-soft);border-radius:5px;
+  background:linear-gradient(180deg, rgba(16,24,36,.55), rgba(8,12,20,.4));
+  padding:28px 24px 26px;overflow:hidden;transition:.28s}
+.mod::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 100% 0%, rgba(86,214,232,.1), transparent 50%);opacity:0;transition:opacity .3s}
+.mod:hover{border-color:var(--line);transform:translateY(-4px)}
+.mod:hover::after{opacity:1}
+.mod .idx{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--glacier);letter-spacing:.2em}
+.mod h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.28rem;margin:20px 0 10px;letter-spacing:-.01em}
+.mod p{color:var(--frost);font-size:.95rem}
+.mod .ic{position:absolute;top:24px;right:22px;width:30px;height:30px;opacity:.8}
+
+/* ---------- ascent / how it works ---------- */
+.ascent-sec{background:linear-gradient(180deg,transparent,rgba(8,12,20,.5),transparent)}
+.steps{position:relative;margin-top:30px}
+.steps svg.curve{width:100%;height:auto;display:block;overflow:visible}
+.stepgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:18px}
+.step .tag{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--glacier);letter-spacing:.14em}
+.step h4{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.12rem;margin:9px 0 7px}
+.step p{color:var(--frost);font-size:.92rem}
+.step .alt{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--frost-dim);margin-top:9px}
+
+/* ---------- pricing ---------- */
+.billing-toggle{display:inline-flex;gap:4px;padding:5px;border:1px solid var(--line);border-radius:3px;
+  background:rgba(8,12,20,.6);margin-bottom:42px}
+.billing-toggle button{font-family:"JetBrains Mono",monospace;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--frost);background:none;border:none;padding:11px 20px;border-radius:2px;cursor:pointer;transition:.2s;
+  display:flex;align-items:center;gap:9px}
+.billing-toggle button.active{background:var(--glacier);color:var(--void);font-weight:700}
+.billing-toggle button em{font-style:normal;font-size:10px;padding:3px 7px;border-radius:2px;letter-spacing:.06em}
+.billing-toggle button .save{background:rgba(255,138,61,.16);color:var(--alpenglow)}
+.billing-toggle button.active .save{background:rgba(5,8,15,.16);color:#04121A}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+.tier{position:relative;border:1px solid var(--line-soft);border-radius:6px;
+  background:linear-gradient(180deg, rgba(16,24,36,.5), rgba(8,12,20,.45));
+  padding:30px 28px 32px;display:flex;flex-direction:column;transition:.28s}
+.tier:hover{transform:translateY(-4px);border-color:var(--line)}
+.tier.feature{border-color:rgba(255,138,61,.45);background:linear-gradient(180deg, rgba(28,20,14,.6), rgba(12,9,6,.5));
+  box-shadow:0 24px 70px -34px rgba(255,138,61,.5)}
+.tier .camp{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--frost-dim);text-transform:uppercase}
+.tier.feature .camp{color:var(--alpenglow)}
+.tier .tname{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.5rem;margin:8px 0 4px}
+.tier .alt{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--frost-dim)}
+.price{margin:24px 0 6px;display:flex;align-items:baseline;gap:6px}
+.price .num{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:2.6rem;line-height:1}
+.tier.feature .price .num{color:var(--alpenglow)}
+.price .cur{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--frost)}
+.price .per{font-size:13px;color:var(--frost-dim)}
+.yearly{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--frost-dim);margin-bottom:22px}
+.yearly b{color:var(--glacier);font-weight:500}
+.tier.feature .yearly b{color:var(--alpenglow-soft)}
+.feat{list-style:none;display:flex;flex-direction:column;gap:13px;margin-bottom:28px;flex:1}
+.feat li{display:flex;gap:11px;font-size:.94rem;color:var(--ice)}
+.feat li span{color:var(--glacier);flex:none;font-family:"JetBrains Mono",monospace;font-size:13px;margin-top:1px}
+.tier.feature .feat li span{color:var(--alpenglow)}
+.tier .pick{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.04em;text-transform:uppercase;
+  text-align:center;padding:14px;border-radius:2px;border:1px solid var(--line);color:var(--ice);transition:.22s;cursor:pointer}
+.tier .pick:hover{border-color:var(--glacier);background:rgba(86,214,232,.08)}
+.tier.feature .pick{background:var(--alpenglow);color:#1a0d04;border-color:var(--alpenglow);font-weight:700}
+.tier.feature .pick:hover{box-shadow:0 0 28px rgba(255,138,61,.5);background:var(--alpenglow-soft)}
+.tag-pop{position:absolute;top:-1px;right:-1px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;
+  background:var(--alpenglow);color:#1a0d04;padding:5px 12px;border-radius:0 6px 0 6px;font-weight:700}
+
+/* ---------- final CTA ---------- */
+.final{text-align:center;padding:110px 0 96px}
+.final h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(2.1rem,4.6vw,3.4rem);letter-spacing:-.02em;line-height:1.05}
+.final h2 .glow{color:var(--glacier);text-shadow:0 0 40px rgba(86,214,232,.5)}
+.final p{color:var(--frost);margin:18px auto 34px;max-width:48ch}
+.final .hero-cta{justify-content:center}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line-soft);padding:42px 0;position:relative;z-index:2}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+footer .fbrand{font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:.18em;display:flex;align-items:center;gap:10px}
+footer .coords{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--frost-dim);letter-spacing:.1em}
+footer .flinks{display:flex;gap:24px;font-size:13px;color:var(--frost)}
+footer .flinks a:hover{color:var(--ice)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- responsive ---------- */
+@media(max-width:920px){
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .modules{grid-template-columns:1fr 1fr}
+  .stepgrid{grid-template-columns:1fr 1fr}
+  .tiers{grid-template-columns:1fr}
+  .navlinks{display:none}
+  .statusbar .sb-right{display:none}
+}
+@media(max-width:560px){
+  .modules{grid-template-columns:1fr}
+  .stepgrid{grid-template-columns:1fr}
+  .readouts{grid-template-columns:1fr 1fr}
+  .wrap{padding:0 20px}
+  section{padding:72px 0}
+  footer .wrap{flex-direction:column;align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+  .profile .ascent{animation:none;stroke-dashoffset:0}
+  .profile .area,.summit-mark{animation:none;opacity:1}
+  .summit-pulse{animation:none;opacity:0}
+  .reveal{opacity:1;transform:none}
+  *{scroll-behavior:auto}
+}
+:focus-visible{outline:2px solid var(--glacier);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<!-- status bar -->
+<div class="statusbar">
+  <div class="wrap">
+    <div><span class="dot"></span><b>SEASON OPEN</b> · OCT–APR · HAJAR RANGE</div>
+    <div class="sb-right mono">25°56′N&nbsp;&nbsp;56°08′E · JEBEL JAIS · 1,934 M</div>
+  </div>
+</div>
+
+<!-- nav -->
+<header class="nav">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="glyph" viewBox="0 0 32 32" fill="none">
+        <path d="M16 3 L29 28 H3 Z" stroke="#56D6E8" stroke-width="1.6"/>
+        <path d="M16 3 L21.5 13.5 L16 17 L10.5 13.5 Z" fill="#56D6E8" fill-opacity="0.85"/>
+        <path d="M16 3 L21.5 13.5 L16 11 Z" fill="#FF8A3D"/>
+      </svg>
+      VERTEX
+    </div>
+    <nav class="navlinks">
+      <a href="#modules">Platform</a>
+      <a href="#ascent">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#routes">Routes</a>
+    </nav>
+    <a href="#pricing" class="nav-cta">Get started</a>
+  </div>
+</header>
+
+<!-- hero -->
+<section class="hero">
+  <!-- topographic contour backdrop -->
+  <svg class="contours" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g stroke="rgba(86,214,232,0.5)" fill="none" stroke-width="1">
+      <path d="M-50 540 C 220 500 360 560 560 520 C 760 480 900 540 1120 500 C 1300 470 1420 510 1500 490" opacity=".18"/>
+      <path d="M-50 480 C 220 440 380 500 580 455 C 780 410 920 470 1140 430 C 1320 398 1430 440 1500 420" opacity=".22"/>
+      <path d="M-50 420 C 240 378 400 438 600 392 C 800 346 940 404 1160 366 C 1340 335 1440 372 1500 354" opacity=".26"/>
+      <path d="M-50 360 C 260 316 420 376 620 330 C 820 284 960 340 1180 304 C 1360 274 1450 308 1500 292" opacity=".22"/>
+      <path d="M-50 300 C 280 258 440 314 640 270 C 840 226 980 280 1200 246 C 1380 217 1460 248 1500 234" opacity=".16"/>
+      <path d="M-50 240 C 300 202 460 254 660 212 C 860 170 1000 222 1220 190 C 1400 162 1470 190 1500 178" opacity=".1"/>
+    </g>
+  </svg>
+
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Expedition OS · United Arab Emirates</span>
+        <h1>Every summit is won<br>at <span class="glow">sea level.</span></h1>
+        <p class="lede">VERTEX turns months of preparation in the UAE into successful ascents — from a weekend on Jebel Jais to standing on Kilimanjaro. Plan, train, and run the whole expedition from one console.</p>
+        <div class="hero-cta">
+          <a href="#pricing" class="btn-primary">Begin ascent</a>
+          <a href="#ascent" class="btn-ghost">See how it works</a>
+        </div>
+      </div>
+
+      <!-- instrument panel signature -->
+      <div class="panel reveal">
+        <div class="panel-head">
+          <span>ELEVATION PROFILE · KILIMANJARO</span>
+          <span class="live">● LIVE</span>
+        </div>
+        <svg class="profile" viewBox="0 0 1000 300" aria-label="Ascent elevation profile">
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#56D6E8" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#56D6E8" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g class="grid">
+            <line x1="0" y1="75" x2="1000" y2="75"/>
+            <line x1="0" y1="150" x2="1000" y2="150"/>
+            <line x1="0" y1="225" x2="1000" y2="225"/>
+          </g>
+          <path class="area" d="M0 275 L70 262 L140 268 L210 240 L290 248 L360 215 L440 222 L520 188 L600 196 L680 160 L760 130 L830 95 L890 55 L920 38 L960 70 L1000 90 L1000 300 L0 300 Z"/>
+          <path class="ascent" d="M0 275 L70 262 L140 268 L210 240 L290 248 L360 215 L440 222 L520 188 L600 196 L680 160 L760 130 L830 95 L890 55 L920 38 L960 70 L1000 90"/>
+          <g class="summit-mark">
+            <circle class="summit-pulse" cx="920" cy="38" r="5" fill="none" stroke="#FF8A3D" stroke-width="1.5"/>
+            <circle cx="920" cy="38" r="5" fill="#FF8A3D"/>
+            <text x="908" y="26" fill="#FFB36B" font-family="JetBrains Mono" font-size="13" text-anchor="end">5,895 m</text>
+          </g>
+        </svg>
+        <div class="readouts">
+          <div class="ro"><div class="lbl">Base</div><div class="val" data-count="0" data-suffix=" m">0<small> m</small></div></div>
+          <div class="ro amber"><div class="lbl">Target</div><div class="val" data-count="5895" data-suffix=" m">0<small> m</small></div></div>
+          <div class="ro"><div class="lbl">Prep</div><div class="val" data-count="16" data-suffix=" wk">0<small> wk</small></div></div>
+          <div class="ro"><div class="lbl">Summit odds</div><div class="val" data-count="38" data-prefix="+" data-suffix="%">0<small>%</small></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ridge silhouette with alpenglow rim -->
+  <div class="ridge" aria-hidden="true">
+    <svg viewBox="0 0 1440 220" preserveAspectRatio="none">
+      <path d="M0 220 L0 150 L150 95 L300 140 L430 70 L560 130 L700 55 L820 120 L980 40 L1120 110 L1280 60 L1440 130 L1440 220 Z" fill="#0A111C"/>
+      <path d="M0 220 L0 175 L180 130 L340 168 L500 110 L660 160 L820 95 L1000 155 L1180 100 L1340 158 L1440 120 L1440 220 Z" fill="#0C1421"/>
+      <path d="M700 55 L820 120" fill="none" stroke="#FF8A3D" stroke-width="2" opacity="0.55"/>
+      <path d="M980 40 L1120 110" fill="none" stroke="#FF8A3D" stroke-width="2" opacity="0.45"/>
+      <path d="M430 70 L560 130" fill="none" stroke="#56D6E8" stroke-width="1.5" opacity="0.4"/>
+    </svg>
+  </div>
+</section>
+
+<!-- modules -->
+<section id="modules">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The platform</span>
+      <h2>Six systems. One ascent.</h2>
+      <p>Everything an expedition needs between the decision and the summit — built for climbers based far from the mountains they're chasing.</p>
+    </div>
+    <div class="divider reveal" style="margin-bottom:40px"></div>
+    <div class="modules">
+      <div class="mod reveal">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#56D6E8" stroke-width="1.4"><path d="M12 2 L21 20 H3 Z"/><path d="M9 14 l3-6 3 6"/></svg>
+        <div class="idx">01</div><h3>Route Library</h3>
+        <p>Hajar trails and the world's great peaks, each with grade, season window, and altitude profile. Pick a target, the platform builds around it.</p>
+      </div>
+      <div class="mod reveal">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#56D6E8" stroke-width="1.4"><path d="M4 18 V8 M9 18 V4 M14 18 V11 M19 18 V6"/></svg>
+        <div class="idx">02</div><h3>Training Programs</h3>
+        <p>Structured plans by objective, with altitude simulation and load tracking. Train in 40°C heat, arrive ready for thin air.</p>
+      </div>
+      <div class="mod reveal">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#56D6E8" stroke-width="1.4"><rect x="3" y="4" width="18" height="17" rx="1.5"/><path d="M3 9 h18 M8 2 v4 M16 2 v4"/></svg>
+        <div class="idx">03</div><h3>Expedition Planner</h3>
+        <p>Itinerary, dates, altitude targets and a live budget across guides, flights, permits and gear — the full climb on one timeline.</p>
+      </div>
+      <div class="mod reveal">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#56D6E8" stroke-width="1.4"><path d="M5 4 h11 l3 3 v13 H5 Z"/><path d="M8 11 l2 2 4-4"/></svg>
+        <div class="idx">04</div><h3>Gear &amp; Logistics</h3>
+        <p>Packing lists generated per expedition and season, with acquisition tracking and reminders timed to every deadline.</p>
+      </div>
+      <div class="mod reveal">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#56D6E8" stroke-width="1.4"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 8 h8 M8 12 h8 M8 16 h5"/></svg>
+        <div class="idx">05</div><h3>Documents Vault</h3>
+        <p>Permits, visas, medical certificates and insurance kept in one place, with expiry alerts before they catch you out.</p>
+      </div>
+      <div class="mod reveal">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#56D6E8" stroke-width="1.4"><path d="M3 20 L9 8 L13 15 L17 5 L21 20 Z"/></svg>
+        <div class="idx">06</div><h3>Ascent Log</h3>
+        <p>Every climb recorded — cumulative vertical, summits, hours. Your mountain history, building toward the next objective.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ascent / how it works -->
+<section id="ascent" class="ascent-sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The route to summit</span>
+      <h2>Four camps, sea level to summit.</h2>
+      <p>The platform mirrors how a real expedition unfolds — each phase unlocks the next.</p>
+    </div>
+    <div class="steps reveal">
+      <svg class="curve" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 110 L250 86 L500 56 L750 30 L1000 8" fill="none" stroke="rgba(86,214,232,.35)" stroke-width="1.5" stroke-dasharray="4 5"/>
+        <circle cx="0" cy="110" r="4" fill="#56D6E8"/><circle cx="333" cy="78" r="4" fill="#56D6E8"/>
+        <circle cx="666" cy="40" r="4" fill="#56D6E8"/><circle cx="1000" cy="8" r="5" fill="#FF8A3D"/>
+      </svg>
+      <div class="stepgrid">
+        <div class="step reveal"><div class="tag">PHASE 01</div><h4>Choose the peak</h4><p>Set your objective and date. VERTEX scopes the prep window and what it'll take to be ready.</p><div class="alt">ALT 0 M · DECISION</div></div>
+        <div class="step reveal"><div class="tag">PHASE 02</div><h4>Build the base</h4><p>Follow a training plan tuned to the climb, logging sessions on the Hajar as you go.</p><div class="alt">ALT 1,934 M · BASE</div></div>
+        <div class="step reveal"><div class="tag">PHASE 03</div><h4>Stage logistics</h4><p>Lock gear, documents and budget. Reminders keep every deadline ahead of departure.</p><div class="alt">ALT 4,000 M · HIGH CAMP</div></div>
+        <div class="step reveal"><div class="tag">PHASE 04</div><h4>Summit &amp; log</h4><p>Make the push, then record it. The ascent feeds straight into your next objective.</p><div class="alt">ALT 5,895 M · SUMMIT</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- pricing -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Choose your camp</span>
+      <h2>Pricing built like an ascent.</h2>
+      <p>Three tiers for serious climbers. Pay monthly, or commit annually and climb for less. All prices in AED.</p>
+    </div>
+    <div class="billing-toggle reveal" role="tablist" aria-label="Billing cycle">
+      <button class="active" data-cycle="annual" aria-selected="true">Annual <em class="save">Save up to 26%</em></button>
+      <button data-cycle="monthly" aria-selected="false">Monthly</button>
+    </div>
+    <div class="tiers">
+      <div class="tier reveal">
+        <div class="camp">Camp I</div>
+        <div class="tname">Ascent</div>
+        <div class="alt">FOR THE COMMITTED</div>
+        <div class="price" data-m="119" data-y="1190" data-ym="99" data-savepct="17">
+          <span class="num">1,190</span><span class="cur">AED</span><span class="per">/ year</span>
+        </div>
+        <div class="yearly">≈ <b>99 AED/mo</b> · 2 months free</div>
+        <ul class="feat">
+          <li><span>+</span>Unlimited expeditions</li>
+          <li><span>+</span>Core training programs</li>
+          <li><span>+</span>Full route library</li>
+          <li><span>+</span>Packing checklists</li>
+          <li><span>+</span>Ascent log</li>
+        </ul>
+        <div class="pick">Choose Ascent</div>
+      </div>
+
+      <div class="tier feature reveal">
+        <div class="tag-pop">MOST CHOSEN</div>
+        <div class="camp">Camp II</div>
+        <div class="tname">Expedition</div>
+        <div class="alt">FOR REAL OBJECTIVES</div>
+        <div class="price" data-m="279" data-y="2490" data-ym="208" data-savepct="26">
+          <span class="num">2,490</span><span class="cur">AED</span><span class="per">/ year</span>
+        </div>
+        <div class="yearly">≈ <b>208 AED/mo</b> · save 26%</div>
+        <ul class="feat">
+          <li><span>+</span>Everything in Ascent</li>
+          <li><span>+</span>Advanced altitude training</li>
+          <li><span>+</span>Live budget &amp; logistics</li>
+          <li><span>+</span>Deadline reminders</li>
+          <li><span>+</span>Documents vault</li>
+        </ul>
+        <div class="pick">Choose Expedition</div>
+      </div>
+
+      <div class="tier reveal">
+        <div class="camp">Camp III</div>
+        <div class="tname">Summit</div>
+        <div class="alt">FOR THE 8,000ERS</div>
+        <div class="price" data-m="549" data-y="4990" data-ym="416" data-savepct="24">
+          <span class="num">4,990</span><span class="cur">AED</span><span class="per">/ year</span>
+        </div>
+        <div class="yearly">≈ <b>416 AED/mo</b> · save 24%</div>
+        <ul class="feat">
+          <li><span>+</span>Everything in Expedition</li>
+          <li><span>+</span>1:1 expedition planning session</li>
+          <li><span>+</span>Priority concierge support</li>
+          <li><span>+</span>Multi-expedition dashboard</li>
+          <li><span>+</span>Early access to new routes</li>
+        </ul>
+        <div class="pick">Choose Summit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- final cta -->
+<section id="routes" class="final">
+  <div class="wrap reveal">
+    <span class="eyebrow" style="justify-content:center;display:flex">Next window opens October</span>
+    <h2>The mountain doesn't wait.<br><span class="glow">Start preparing today.</span></h2>
+    <p>Join the climbers turning UAE weekends into world summits. Pick a tier and start preparing today.</p>
+    <div class="hero-cta">
+      <a href="#pricing" class="btn-primary">Choose your plan</a>
+      <a href="#modules" class="btn-ghost">Explore the platform</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fbrand">
+      <svg class="glyph" width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <path d="M16 3 L29 28 H3 Z" stroke="#56D6E8" stroke-width="1.6"/>
+        <path d="M16 3 L21.5 13.5 L16 11 Z" fill="#FF8A3D"/>
+      </svg>
+      VERTEX
+    </div>
+    <div class="flinks">
+      <a href="#modules">Platform</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="coords">© 2026 VERTEX · 25°56′N 56°08′E</div>
+  </div>
+</footer>
+
+<script>
+// count-up for readout values
+function animateCount(el){
+  const target=+el.dataset.count, suf=el.dataset.suffix||"", pre=el.dataset.prefix||"";
+  const dur=1600, t0=performance.now();
+  function tick(now){
+    const p=Math.min((now-t0)/dur,1);
+    const eased=1-Math.pow(1-p,3);
+    const v=Math.round(target*eased);
+    el.innerHTML=pre+v.toLocaleString()+"<small>"+suf+"</small>";
+    if(p<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+window.addEventListener("load",()=>{
+  document.querySelectorAll(".ro .val").forEach(el=>{
+    if(reduce){const v=(el.dataset.prefix||"")+(+el.dataset.count).toLocaleString()+"<small>"+(el.dataset.suffix||"")+"</small>";el.innerHTML=v;}
+    else setTimeout(()=>animateCount(el),2400);
+  });
+});
+
+// scroll reveal
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});
+},{threshold:.14});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+// billing cycle toggle (monthly / annual)
+const cycleBtns=document.querySelectorAll(".billing-toggle button");
+function setCycle(cycle){
+  cycleBtns.forEach(b=>{
+    const on=b.dataset.cycle===cycle;
+    b.classList.toggle("active",on);
+    b.setAttribute("aria-selected",on);
+  });
+  document.querySelectorAll(".tier .price").forEach(p=>{
+    const num=p.querySelector(".num"), per=p.querySelector(".per");
+    const yearly=p.parentElement.querySelector(".yearly");
+    if(cycle==="annual"){
+      num.textContent=(+p.dataset.y).toLocaleString();
+      per.textContent="/ year";
+      yearly.innerHTML="≈ <b>"+(+p.dataset.ym).toLocaleString()+" AED/mo</b> · save "+p.dataset.savepct+"%";
+    }else{
+      num.textContent=(+p.dataset.m).toLocaleString();
+      per.textContent="/ month";
+      yearly.innerHTML="billed monthly · switch to annual to save";
+    }
+  });
+}
+cycleBtns.forEach(b=>b.addEventListener("click",()=>setCycle(b.dataset.cycle)));
+setCycle("annual");
+
+// pick buttons -> scroll to pricing (placeholder for checkout)
+document.querySelectorAll(".pick").forEach(b=>b.addEventListener("click",()=>{
+  document.getElementById("pricing").scrollIntoView();
+}));
+</script>
+</body>
+</html>
